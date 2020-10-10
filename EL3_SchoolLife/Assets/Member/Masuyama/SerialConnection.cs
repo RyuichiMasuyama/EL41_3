@@ -1,18 +1,73 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿// Unityのシステム使用
 using UnityEngine;
+using UnityEngine.UI;
+
+// Singleton
 using TeamProject.System;
 
+//　ポート通信等に使用
 using System.IO;
 using System.IO.Ports;
 using System.Threading;
 
-using System;
-
-public class SerialConnection : Singleton<SerialConnection>
+public class SerialConnection : MonoBehaviour
 {
-    public string portName = "COM3";
-    public int baudRate = 9600;
+    // Findが面倒なのでTextをそのままアタッチ
+    [SerializeField]
+    private Text comText;
+    [SerializeField]
+    private Text com;
+
+    [SerializeField]
+    private Text portText;
+    [SerializeField]
+    private Text port;
+
+    [SerializeField]
+    private Button button;
+
+    private string portName = "COM3";
+    private int baudRate = 9600;
+
+    private void Start()
+    {
+        comText.text = portName;
+        portText.text = baudRate.ToString();
+
+        // 設定
+        Serial.Instance.SetPortBaud(portName, baudRate);
+
+        // instanceを生成するために一度ここで呼び出す
+        Serial.Instance.SerialOpen();
+    }
+
+    private void Update()
+    {
+
+    }
+    
+    public void OnClick()
+    {
+        portName = com.text;
+        baudRate = int.Parse(port.text); 
+
+        // 設定
+        Serial.Instance.SetPortBaud(portName, baudRate);
+
+        // instanceを生成するために一度ここで呼び出す
+        Serial.Instance.SerialOpen();
+    }
+}
+
+public class Serial : Singleton<Serial>
+{
+    private string portName;
+    private int baudRate;
+
+    // 接続ができていない場合外部からポートの設定を行う
+    public string PortName { set { if (!isRunning_) portName = value; } }
+    // 接続ができていない場合外部からバウドの設定を行う
+    public int BaudRate { set { if (!isRunning_) baudRate = value; } }
 
     private SerialPort serialPort_;
     private Thread thread_;
@@ -23,15 +78,32 @@ public class SerialConnection : Singleton<SerialConnection>
 
     private bool StopAlarm = false;
     private byte WakingLevel;
-    
+
+
+    public Serial()
+    {
+    }
 
     public void SerialOpen()
     {
         // ポートの生成とThreadの生成
         Debug.Log("Start");
 
-        Open();
-        ThreadOpen();
+        if (isRunning_) return;
+
+        // ポートの開示
+        var isOpen = Open();
+
+        // ポート開示ができていればThreadの開示
+        if (isOpen) ThreadOpen();
+    }
+
+    public void SetPortBaud(string _port, int _baud)
+    {
+        if (isRunning_) return;
+
+        portName = _port;
+        baudRate = _baud;
     }
 
     public void Update()
@@ -73,36 +145,36 @@ public class SerialConnection : Singleton<SerialConnection>
         StopAlarm = val;
     }
 
-    void OnDestroy()
+    public void OnDestroy()
     {
         Debug.LogWarning("OnDestroy");
         Close();
     }
 
-    private void Open()
+    private bool Open()
     {
         Debug.Log("エラー前");
 
         // ポートの生成
         serialPort_ = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
-       
+
+        bool isOk = true;
+
+        // 念のためポートが既にオープンされていないことを確認
         try
         {
-            // 念のためポートが既にオープンされていないことを確認
             if (!serialPort_.IsOpen) serialPort_.Open();
+            isOk = true;
         }
         catch(IOException e)
         {
-            Debug.Log(e);
+            Debug.LogWarning("Comかポート番号が正常ではありません。再接続をお願いします。");
+            isOk = false;
         }
+        
+        isRunning_ = isOk;
 
-        // ポートの取得が成功ているかどうか
-        if (serialPort_ == null)
-        {
-            Debug.Log("NowError");
-        }
-
-        isRunning_ = true;
+        return isOk;
     }
 
     private void ThreadOpen()

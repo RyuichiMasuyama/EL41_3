@@ -25,6 +25,10 @@ namespace TeamProject
                     return _instance;
                 }
             }
+            public static T Get()
+            {
+                return _instance;
+            }
         }
     }
 
