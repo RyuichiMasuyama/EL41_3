@@ -1,4 +1,5 @@
 ﻿using nInpactManager;
+using nScoreManager;
 using System;
 using UnityEngine;
 
@@ -8,18 +9,18 @@ namespace nWeightManager
     public class WeightManager : MonoBehaviour
     {
         private float weight;
-        [SerializeField] private float bottomInpactForce;
-        [SerializeField] private float coefficientInpact;
+        [SerializeField] private float bottomInpactForce = default;
+        [SerializeField] private float coefficientInpact = default;
+        [SerializeField] private float score = default;
         [SerializeField] private GameObject player = default;
-        [SerializeField] private Rigidbody rigidbody;
-        [SerializeField] private Collider collider;
+        [SerializeField] private new Collider collider = default;
         private InpactManager inpactManager;
         [SerializeField] private string[] exclusionTags = default;
         private float inpactForce;
         public bool inpactFlg { get; private set; } = false;
         private Vector3 toVec = default;
         private Vector3 rollVec = default;
-        private Renderer renderer;
+        private new Renderer renderer = default;
 
 
         // Start is called before the first frame update
@@ -35,6 +36,9 @@ namespace nWeightManager
         void Update()
         {
             RollObject();
+
+            if (this.transform.position.y <  -5.0f)
+                Destroy(this.gameObject);
         }
 
         private void OnBecameInvisible()
@@ -65,7 +69,10 @@ namespace nWeightManager
             if (inpactForce < bottomInpactForce)
                 inpactForce = 15.0f;
             else
+            {
                 inpactForce = coefficientInpact;
+                ScoreManager.AddScore(score);   //ついでにスコア加算
+            }
 
             
             //吹っ飛ばす力と重さから最終的な衝撃を出す(bottomForceの値分は保証する)
@@ -104,7 +111,6 @@ namespace nWeightManager
             if (inpactManager.inpacet < bottomInpactForce)
                 rollSpd = 1.0f;
 
-            //rollVec = new Vector3(0.0f, 0.0f, rollSpd);
             transform.Rotate(new Vector3(0.0f, 0.0f, rollSpd));
 
             if (!collider.isTrigger)
