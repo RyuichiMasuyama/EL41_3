@@ -1,6 +1,4 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
-
+﻿
 Shader "Custom/ZooForest" {
 	Properties{
 		// Diffuse texture
@@ -9,20 +7,19 @@ Shader "Custom/ZooForest" {
 	_Curvature("Curvature", Float) = 0.001
 	}
 		SubShader{
+		Blend SrcAlpha OneMinusSrcAlpha
 		Tags{ "RenderType" = "Opaque" }
 		LOD 200
 
 		CGPROGRAM
-		// Surface shader function is called surf, and vertex preprocessor function is called vert
-		// addshadow used to add shadow collector and caster passes following vertex modification
-#pragma surface surf Lambert vertex:vert addshadow
 
-		// Access the shaderlab properties
+#pragma surface surf Lambert vertex:vert addshadow
+		# pragma multi_compile FANCY_STUFF_OFF FANCY_STUFF_ON
+
 		uniform sampler2D _MainTex;
 	uniform float _Curvature;
 
-	// Basic input structure to the shader function
-	// requires only a single set of UV texture mapping coordinates
+
 	struct Input {
 		float2 uv_MainTex;
 	};
@@ -49,6 +46,7 @@ Shader "Custom/ZooForest" {
 	void surf(Input IN, inout SurfaceOutput o) {
 		half4 c = tex2D(_MainTex, IN.uv_MainTex);
 		o.Albedo = c.rgb;
+		clip(c.a - 0.5);
 		o.Alpha = c.a;
 	}
 	ENDCG

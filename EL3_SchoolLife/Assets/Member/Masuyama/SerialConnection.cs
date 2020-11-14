@@ -10,29 +10,40 @@ using System.IO;
 using System.IO.Ports;
 using System.Threading;
 
+// 先が右
+// 後が左
+
 public class SerialConnection : MonoBehaviour
 {
     // Findが面倒なのでTextをそのままアタッチ
-    [SerializeField]
-    private Text comText;
-    [SerializeField]
-    private Text com;
+    //[SerializeField]
+    //private Text comText;
+    //[SerializeField]
+    //private Text com;
 
-    [SerializeField]
-    private Text portText;
-    [SerializeField]
-    private Text port;
+    //[SerializeField]
+    //private Text portText;
+    //[SerializeField]
+    //private Text port;
 
-    [SerializeField]
-    private Button button;
+    private string portName = "COM2";
+    private int baudRate = 115200;
 
-    private string portName = "COM3";
-    private int baudRate = 9600;
+
+    public string PortName { set { portName = value; } }
+    public int BaudRate { set { baudRate = value; } }
+
+
+    public void SetSize(int size)
+    {
+        Serial.Instance.ReadSize = size;
+    }
 
     private void Start()
     {
-        comText.text = portName;
-        portText.text = baudRate.ToString();
+        //comText.text = portName;
+        //portText.text = baudRate.ToString();
+
 
         // 設定
         Serial.Instance.SetPortBaud(portName, baudRate);
@@ -43,19 +54,30 @@ public class SerialConnection : MonoBehaviour
 
     private void Update()
     {
-
+       //  Serial.Instance.Update();
     }
+
+    public string GetData()
+    {
+        return Serial.Instance.ReadData;
+    }
+
     
     public void OnClick()
     {
-        portName = com.text;
-        baudRate = int.Parse(port.text); 
+        //portName = com.text;
+        //baudRate = int.Parse(port.text); 
 
         // 設定
         Serial.Instance.SetPortBaud(portName, baudRate);
 
         // instanceを生成するために一度ここで呼び出す
         Serial.Instance.SerialOpen();
+    }
+
+    private void OnDestroy()
+    {
+        Serial.Instance.OnDestroy();
     }
 }
 
@@ -73,15 +95,20 @@ public class Serial : Singleton<Serial>
     private Thread thread_;
     private bool isRunning_ = false;
 
-    private string message_;
+    private string readData;
+    public string ReadData { get { return readData; } }
+
     private bool isNewMessageReceived_ = false;
 
     private bool StopAlarm = false;
     private byte WakingLevel;
 
+    private int readSize = 0;
+    public  int ReadSize { set { readSize = value; } }
 
     public Serial()
     {
+
     }
 
     public void SerialOpen()
@@ -108,7 +135,7 @@ public class Serial : Singleton<Serial>
 
     public void Update()
     {
-        Debug.LogWarning("Serial-Update");
+       //  Debug.LogWarning("Serial-Update");
         //if (isNewMessageReceived_) {
         //    OnDataReceived(message_);
         //}
@@ -156,7 +183,7 @@ public class Serial : Singleton<Serial>
         Debug.Log("エラー前");
 
         // ポートの生成
-        serialPort_ = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
+        serialPort_ = new SerialPort(portName, baudRate, Parity.None, 32, StopBits.One);
 
         bool isOk = true;
 
@@ -192,13 +219,23 @@ public class Serial : Singleton<Serial>
             Debug.LogWarning("ReadOK");
             try
             {
-                message_ = serialPort_.ReadLine();
-                //                Debug.LogWarning(message_);
+                Debug.Log(readSize);
+
+                //byte[] geat = new byte[8];
+                //serialPort_.Read(geat, 0, 8);
+                //Debug.Log(geat);
+                // Debug.Log(readSize);
+                readData = serialPort_.ReadLine();
+                // Debug.Log(readData + "a");
+
                 isNewMessageReceived_ = true;
             }
             catch (System.Exception e)
             {
                 Debug.LogWarning(e.Message);
+                // var str =  serialPort_.ReadByte();
+                // Debug.Log(str);
+
             }
         }
     }
@@ -206,10 +243,12 @@ public class Serial : Singleton<Serial>
     private void Close()
     {
         isRunning_ = false;
+       //  Debug.Assert(false);
 
         if (thread_ != null && thread_.IsAlive)
         {
             thread_.Join();
+            thread_ = null;
         }
 
         if (serialPort_ != null && serialPort_.IsOpen)
