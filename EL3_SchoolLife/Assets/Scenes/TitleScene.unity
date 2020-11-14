@@ -508,11 +508,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 449782418}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e809292098b695a4ea27b9b226412843, type: 3}
+  m_Script: {fileID: 11500000, guid: cc9ab2d284a88294eba5d6679807942b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  com: COM4
-  port: 115200
+  com: COM3
+  port: 9600
 --- !u!4 &449782420
 Transform:
   m_ObjectHideFlags: 0
