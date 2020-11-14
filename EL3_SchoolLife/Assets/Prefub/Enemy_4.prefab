@@ -124,7 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 158542eae10bf644db907167a2114b4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bottomInpactForce: 2
+  bottomInpactForce: 130
   coefficientInpact: 45
   player: {fileID: 8954757769512036439, guid: 2149ace66f4a25e46b7c374733683023, type: 3}
   rigidbody: {fileID: 4080801390725609143}

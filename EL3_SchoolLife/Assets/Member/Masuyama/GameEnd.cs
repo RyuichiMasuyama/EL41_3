@@ -1,18 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Drawing;
-
-
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameEnd : SingletonMonoBehaviour<GameEnd>
 {
     // Update is called once per frame
-    static void Update()
+     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Quit();
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("sfewf");
+            SceneManager.LoadScene("MasuyamaDebug");
+            // Quit();
         }
 
     }

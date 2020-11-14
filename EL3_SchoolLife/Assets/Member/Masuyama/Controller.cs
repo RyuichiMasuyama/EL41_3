@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
+﻿using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
@@ -30,6 +27,7 @@ public class Controller : MonoBehaviour
         serial = gameObject.AddComponent<SerialConnection>();
         serial.SetSize(sizeof(float) * (int)Shoulder.Max);
         data  = new float[(int)Shoulder.Max];
+        DontDestroyOnLoad(gameObject);
     }
 
     public void ReConection()

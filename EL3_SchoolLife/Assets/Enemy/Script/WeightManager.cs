@@ -84,7 +84,7 @@ namespace nWeightManager
 
             toVec.x += Mathf.Sign(toVec.x) * UnityEngine.Random.Range(0.35f, 0.65f);
             toVec.y += 0.8f;
-            toVec.z += 0.5f;
+            toVec.z += 5.0f;
 
             //設定した方向に吹き飛ばす
             this.GetComponent<Rigidbody>().AddForce(toVec * inpactForce, ForceMode.Impulse);

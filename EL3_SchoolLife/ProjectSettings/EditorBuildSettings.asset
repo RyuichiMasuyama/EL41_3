@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/UpGreadScene.unity
     guid: ba11d02e0a7388145918ba4d0baabb43
+  - enabled: 1
+    path: Assets/Member/Masuyama/MasuyamaDebug.unity
+    guid: 00815077f1f435648bd8aee97440cb4e
   m_configObjects: {}

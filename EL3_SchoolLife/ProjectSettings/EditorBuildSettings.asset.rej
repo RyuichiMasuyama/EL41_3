@@ -1,0 +1,17 @@
+diff a/EL3_SchoolLife/ProjectSettings/EditorBuildSettings.asset b/EL3_SchoolLife/ProjectSettings/EditorBuildSettings.asset	(rejected hunks)
+@@ -4,5 +4,14 @@
+ EditorBuildSettings:
+   m_ObjectHideFlags: 0
+   serializedVersion: 2
+-  m_Scenes: []
++  m_Scenes:
++  - enabled: 1
++    path: Assets/Member/Manganji/Scenes/TitleScene.unity
++    guid: 54ebe8022c64188418a202d1dc69080c
++  - enabled: 1
++    path: Assets/Member/Manganji/Scenes/EnemyTEST.unity
++    guid: 237edb0188a482c40a37014be260ff1a
++  - enabled: 1
++    path: Assets/Member/Manganji/Scenes/GameScene.unity
++    guid: e352194c9061f0a4b9bc11b020cf56fb
+   m_configObjects: {}

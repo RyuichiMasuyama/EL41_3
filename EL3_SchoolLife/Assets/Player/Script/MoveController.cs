@@ -12,25 +12,28 @@ namespace nMoveController
         public new GameObject camera;
         private Vector3 headAngle;
         [SerializeField] private float limitXAxisAngle = default;
+        private Vector3 pos;
 
 
         // Start is called before the first frame update
         void Start()
         {
-
+            pos = transform.position;
         }
 
         // Update is called once per frame
         void Update()
         {
             Move();
-            CameraRot();
+            //CameraRot();
         }
 
         private void Move()
         {
-            transform.position += transform.TransformDirection(Vector3.forward) * Input.GetAxis("Vertical") * moveSpd;
-            transform.position += transform.TransformDirection(Vector3.right) * Input.GetAxis("Horizontal") * moveSpd;
+            //transform.position += transform.TransformDirection(Vector3.forward) * Input.GetAxis("Vertical") * moveSpd;
+            //transform.position += transform.TransformDirection(Vector3.right) * Input.GetAxis("Horizontal") * moveSpd;
+            pos.z += Time.deltaTime * moveSpd;
+            transform.position = pos;
         }
 
         private void CameraRot()
